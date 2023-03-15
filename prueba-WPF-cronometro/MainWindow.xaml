@@ -1,0 +1,52 @@
+﻿<Window x:Class="prueba_WPF_cronometro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:prueba_WPF_cronometro"
+        mc:Ignorable="d"
+        Title="Cronómetro" Height="450" Width="800">
+    
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border HorizontalAlignment="Center" Grid.Row="0">
+                 <StackPanel Orientation="Horizontal"  Margin="10">
+                    <Button Content="Cronómetro clásico" Margin="5" Padding="10" Cursor="Hand"
+                                Command="{Binding InitCommonChronometerCommand}" 
+                                IsEnabled="{Binding InitCommonChronometerEnabled}"
+                                FontWeight="Bold"
+                                Background ="{Binding InitCommonChronometerSelectedColor}"/>
+                     <Button Content="Cronómetro de segundos" Margin="5" Padding="10" Cursor="Hand"
+                                Command="{Binding InitSecondsChronometerCommand}" 
+                                IsEnabled="{Binding InitSecondsChronometerEnabled}"
+                                FontWeight="Bold"
+                                Background="{Binding InitSecondsChronometerSelectedColor}" />
+                 </StackPanel>
+            </Border>
+            
+            <Border Background="LightGray" Grid.Row="1">
+                 <StackPanel Margin="10">
+                    <Button Content="Start" Margin="5" Padding="10" Cursor="Hand"
+                                Command="{Binding StartCommand}" IsEnabled="{Binding StartEnabled}" />
+                    <Button Content="Pause" Margin="5" Padding="10" Cursor="Hand"
+                                Command="{Binding PauseCommand}" IsEnabled="{Binding PauseEnabled}" />
+                    <Button Content="Stop" Margin="5" Padding="10" Cursor="Hand"
+                                Command="{Binding StopCommand}" IsEnabled="{Binding StopEnabled}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2" HorizontalAlignment="Center" Margin="10">
+                <Label Content="{Binding TimeToShow}"
+                        Foreground="{Binding ChronometerColor}"
+                        FontFamily="Segoe UI"
+                        FontSize="96"
+                        FontWeight="Bold"/>
+            </Border>
+    </Grid>
+</Window>
