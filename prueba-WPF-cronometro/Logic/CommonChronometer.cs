@@ -56,7 +56,7 @@ namespace prueba_WPF_cronometro.Logic
             get
             {
                 TimeSpan duration = (DateTime.Now - StartTime + AgregatedTime);
-                return $"{Math.Floor(duration.TotalHours)}:{(Math.Floor(duration.TotalMinutes)%60).ToString("00")}:{(duration.TotalSeconds%60).ToString("00")}";
+                return $"{Math.Floor(duration.TotalHours)}:{(Math.Floor(duration.TotalMinutes)%60).ToString("00")}:{(Math.Floor(duration.TotalSeconds)%60).ToString("00")}";
             }
         }
     }
