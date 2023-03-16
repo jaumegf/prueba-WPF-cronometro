@@ -18,26 +18,27 @@
             <Border HorizontalAlignment="Center" Grid.Row="0">
                  <StackPanel Orientation="Horizontal"  Margin="10">
                     <Button Content="Cronómetro clásico" Margin="5" Padding="10" Cursor="Hand"
-                                Command="{Binding InitCommonChronometerCommand}" 
-                                IsEnabled="{Binding InitCommonChronometerEnabled}"
+                                Command="{Binding SelectCommonChronometerCommand}" 
+                                IsEnabled="{Binding SelectCommonChronometerEnabled}"
                                 FontWeight="Bold"
-                                Background ="{Binding InitCommonChronometerSelectedColor}"/>
+                                Background ="{Binding SelectCommonChronometerSelectedColor}"/>
                      <Button Content="Cronómetro de segundos" Margin="5" Padding="10" Cursor="Hand"
-                                Command="{Binding InitSecondsChronometerCommand}" 
-                                IsEnabled="{Binding InitSecondsChronometerEnabled}"
+                                Command="{Binding SelectSecondsChronometerCommand}" 
+                                IsEnabled="{Binding SelectSecondsChronometerEnabled}"
                                 FontWeight="Bold"
-                                Background="{Binding InitSecondsChronometerSelectedColor}" />
+                                Background="{Binding SelectSecondsChronometerSelectedColor}" />
                  </StackPanel>
             </Border>
             
             <Border Background="LightGray" Grid.Row="1">
                  <StackPanel Margin="10">
                     <Button Content="Start" Margin="5" Padding="10" Cursor="Hand"
-                                Command="{Binding StartCommand}" IsEnabled="{Binding StartEnabled}" />
-                    <Button Content="Pause" Margin="5" Padding="10" Cursor="Hand"
-                                Command="{Binding PauseCommand}" IsEnabled="{Binding PauseEnabled}" />
+                            Command="{Binding StartCommand}" IsEnabled="{Binding StartEnabled}" />
+                    <Button Content="{Binding PauseContent}" 
+                            Margin="5" Padding="10" Cursor="Hand"
+                            Command="{Binding PauseCommand}" IsEnabled="{Binding PauseEnabled}" />
                     <Button Content="Stop" Margin="5" Padding="10" Cursor="Hand"
-                                Command="{Binding StopCommand}" IsEnabled="{Binding StopEnabled}" />
+                            Command="{Binding StopCommand}" IsEnabled="{Binding StopEnabled}" />
                 </StackPanel>
             </Border>
 

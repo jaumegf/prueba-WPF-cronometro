@@ -1,4 +1,4 @@
-﻿using prueba_WPF_cronometro.Logic;
+﻿using prueba_WPF_cronometro.ControlsLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +7,18 @@ using System.Threading.Tasks;
 
 namespace prueba_WPF_cronometro.DependecyInyection
 {
-
-
     /*
      Tal y como piden las indicaciones del ejercicio,
      se pide un ejemplo de implementación de Inyección de dependencias(DI) sin utilizar ningún framework.
-     Solución aportada
-     Se crea una lista de objetos IChronometer(que implementan la interfaz IChronometer)
-     Tanto la interfaz como los objetos, estan definidos en el namespace prueba_WPF_cronometro.Logic
-     Ambos objetos implementan la misma lógica. Simplemente como ejemplo
-        * CommonChronometer: Mostrará el tiempo en formato hh:mm:ss
-        * SecondsChronometer: Mostrará el total de segundos transcurridos.
-        *  Puesto que la lógica de SecondsChronometer es igual a la de CommonChronometer, 
-          se utiliza la herencia con sobreescritura de métodos (override) para reutilizar la lógica
-          , no obstante, queda así un ejemplo de que se puede cambiar la lógica de cualquiera de los cronómetros
+     Solución aportada:
+         Se crea una lista de objetos IChronometer(que implementan la interfaz IChronometer)
+         Tanto la interfaz como los objetos, estan definidos en el namespace prueba_WPF_cronometro.ControlsLogic
+         Ambos objetos implementan la misma lógica, pero como ejemplo tienen la siguiente diferencia:
+            * CommonChronometer: Mostrará el tiempo en formato hh:mm:ss
+            * SecondsChronometer: Mostrará el total de segundos transcurridos.
+            *  Puesto que la lógica de SecondsChronometer es igual a la de CommonChronometer, 
+              se utiliza la herencia con sobreescritura de métodos (override) para reutilizar la lógica
+              , no obstante, queda así un ejemplo de que se puede cambiar la lógica de cualquiera de los cronómetros
     */
     public static class ChronometersDIFactory
     {

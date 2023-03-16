@@ -1,35 +1,36 @@
 ﻿using prueba_WPF_cronometro.Commands;
-using prueba_WPF_cronometro.Logic;
+using prueba_WPF_cronometro.ControlsLogic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
+using static prueba_WPF_cronometro.ControlsLogic.IChronometer;
+
 
 namespace prueba_WPF_cronometro.ViewModels
 {
     public class ChronometerViewModel : INotifyPropertyChanged
     {
+        //Consultar clase ChronometersDIFactory para detalles sobre la solución aportada con Inyección de dependencias
+        // Los comandos SelectCommonChronometer y SelectSecondsChronometer
+        // . Están vinculados con los comandos de los botones del XALM, cronómetro clásico y cronómetro en segundos
+        // . Harán uso de la clase ChronometersDIFactory para instanciar las clases CommonChronometer o SecondsChronometer 
+        //   según la elección del usuario, y, de esta forma utilizar la lógica de uno u otro
+        //   cronómetro según seleccione el usuario sin conocer la implementación específica de cada uno
+
         private IChronometer SelectedChronometer;
-        private DispatcherTimer _timer;
-
-        //Consultar ChronometersDIFactory para detalles sobre la solución aportada con Inyección de dependencias
-        // Los comandos InitCommonChronometer InitSecondsChronometer
-        // . Están vinculados con los botones del XALM, cronómetro clásico y cronómetro en segundos
-        // . Harán uso de esta clase para utilizar uno u otro cronómetro según seleccione el usuario
-        //  , sin conocer la implementación específica de cada uno
-
+             
         private DependecyInyection.ChronometersDIFactory.EChronometers CurrentChronometer;
 
 
         public ChronometerViewModel()
         {
-            InitCommonChronometerCommand = new RelayCommand(InitCommonChronometer);
-            InitSecondsChronometerCommand = new RelayCommand(InitSecondsChronometer);
-            InitCommonChronometerEnabled = true;
-            InitSecondsChronometerEnabled = true;
+            SelectCommonChronometerCommand = new RelayCommand(SelectCommonChronometer);
+            SelectSecondsChronometerCommand = new RelayCommand(SelectSecondsChronometer);
+            SelectCommonChronometerEnabled = true;
+            SelectSecondsChronometerEnabled = true;
 
 
             StartCommand = new RelayCommand(Start);
@@ -39,12 +40,9 @@ namespace prueba_WPF_cronometro.ViewModels
             PauseEnabled = false;
             StopEnabled = false;
 
-            _timer = new DispatcherTimer();
-            _timer.Interval = new TimeSpan(0, 0, 0, 0, 100);
-            _timer.Tick += OnTimerTick;
+            PauseContent = "Pause";
 
             SelectChrono(DependecyInyection.ChronometersDIFactory.EChronometers.COMMON);
-            TimeToShow = SelectedChronometer.DefaultShowTime;
         }
 
 
@@ -55,25 +53,27 @@ namespace prueba_WPF_cronometro.ViewModels
                                   .Chronometers
                                   .FirstOrDefault(c => c.Key == CurrentChronometer).Value;
 
+            SelectedChronometer.CallBackRefresh = new DelegateRefresh(Chronometer_Tick);
 
             if (chroneToSelect== DependecyInyection.ChronometersDIFactory.EChronometers.COMMON)
             {
-                InitCommonChronometerSelectedColor = Brushes.LightGray;
-                InitSecondsChronometerSelectedColor = Brushes.White;
+                SelectCommonChronometerSelectedColor = Brushes.LightGray;
+                SelectSecondsChronometerSelectedColor = Brushes.White;
             }
             else
             {
-                InitCommonChronometerSelectedColor = Brushes.White;
-                InitSecondsChronometerSelectedColor = Brushes.LightGray;
+                SelectCommonChronometerSelectedColor = Brushes.White;
+                SelectSecondsChronometerSelectedColor = Brushes.LightGray;
             }
 
             TimeToShow = SelectedChronometer.DefaultShowTime;
+            ChronometerColor = Brushes.Gray;
         }
 
 
-        public ICommand InitCommonChronometerCommand { get; private set; }
+        public ICommand SelectCommonChronometerCommand { get; private set; }
 
-        public ICommand InitSecondsChronometerCommand { get; private set; }
+        public ICommand SelectSecondsChronometerCommand { get; private set; }
 
         public ICommand StartCommand { get; private set; }
         public ICommand PauseCommand { get; private set; }
@@ -81,33 +81,33 @@ namespace prueba_WPF_cronometro.ViewModels
 
 
 
-        private void InitCommonChronometer(object obj)
+        private void SelectCommonChronometer(object obj)
         {
             SelectChrono(DependecyInyection.ChronometersDIFactory.EChronometers.COMMON);
         }
 
-        private void InitSecondsChronometer(object obj)
+        private void SelectSecondsChronometer(object obj)
         {
             SelectChrono(DependecyInyection.ChronometersDIFactory.EChronometers.SECONDS);
         }
 
-
-        private void OnTimerTick(object sender, EventArgs e)
+        private void Chronometer_Tick()
         {
             TimeToShow = SelectedChronometer.TimeToShow;
         }
 
+
         private void Start(object obj)
         {
-            InitCommonChronometerEnabled = false;
-            InitSecondsChronometerEnabled = false;
+            SelectCommonChronometerEnabled = false;
+            SelectSecondsChronometerEnabled = false;
 
             StartEnabled = false;
             PauseEnabled = true;
             StopEnabled = true;
 
             TimeToShow = SelectedChronometer.DefaultShowTime;
-            SelectedChronometer.Init(_timer);
+            SelectedChronometer.Start();
             ChronometerColor = Brushes.Green;
         }
 
@@ -120,11 +120,13 @@ namespace prueba_WPF_cronometro.ViewModels
 
             if (PauseOn)
             {
+                PauseContent = "Resume";
                 SelectedChronometer.Pause();
                 ChronometerColor = Brushes.Gray;
             }
             else
             {
+                PauseContent = "Pause";
                 SelectedChronometer.Resume();
                 ChronometerColor = Brushes.Green;
             }
@@ -132,11 +134,12 @@ namespace prueba_WPF_cronometro.ViewModels
 
         private void Stop(object obj)
         {
-            InitCommonChronometerEnabled = true;
-            InitSecondsChronometerEnabled = true;
+            SelectCommonChronometerEnabled = true;
+            SelectSecondsChronometerEnabled = true;
 
             SelectedChronometer.Stop();
             PauseOn = false;
+            PauseContent = "Pause";
             ChronometerColor = Brushes.Red;
 
             StartEnabled = true;
@@ -145,51 +148,50 @@ namespace prueba_WPF_cronometro.ViewModels
         }
 
 
-        private bool _initCommonChronometerEnabled;
-        public bool InitCommonChronometerEnabled
+        private bool _selectCommonChronometerEnabled;
+        public bool SelectCommonChronometerEnabled
         {
-            get { return _initCommonChronometerEnabled; }
+            get { return _selectCommonChronometerEnabled; }
             set
             {
-                _initCommonChronometerEnabled = value;
-                OnPropertyChanged("InitCommonChronometerEnabled");
+                _selectCommonChronometerEnabled = value;
+                OnPropertyChanged("SelectCommonChronometerEnabled");
             }
         }
 
 
-        private Brush _initCommonChronometerSelectedColor;
-        public Brush InitCommonChronometerSelectedColor
+        private Brush _selectCommonChronometerSelectedColor;
+        public Brush SelectCommonChronometerSelectedColor
         {
-            get { return _initCommonChronometerSelectedColor; }
+            get { return _selectCommonChronometerSelectedColor; }
             set
             {
-                _initCommonChronometerSelectedColor = value;
-                OnPropertyChanged("InitCommonChronometerSelectedColor");
+                _selectCommonChronometerSelectedColor = value;
+                OnPropertyChanged("SelectCommonChronometerSelectedColor");
             }
         }
 
 
-
-        private bool _initSecondsChronometerEnabled;
-        public bool InitSecondsChronometerEnabled
+        private bool _selectSecondsChronometerEnabled;
+        public bool SelectSecondsChronometerEnabled
         {
-            get { return _initSecondsChronometerEnabled; }
+            get { return _selectSecondsChronometerEnabled; }
             set
             {
-                _initSecondsChronometerEnabled = value;
-                OnPropertyChanged("InitSecondsChronometerEnabled");
+                _selectSecondsChronometerEnabled = value;
+                OnPropertyChanged("SelectSecondsChronometerEnabled");
             }
         }
 
 
-        private Brush _initSecondsChronometerSelectedColor;
-        public Brush InitSecondsChronometerSelectedColor
+        private Brush _selectSecondsChronometerSelectedColor;
+        public Brush SelectSecondsChronometerSelectedColor
         {
-            get { return _initSecondsChronometerSelectedColor; }
+            get { return _selectSecondsChronometerSelectedColor; }
             set
             {
-                _initSecondsChronometerSelectedColor = value;
-                OnPropertyChanged("InitSecondsChronometerSelectedColor");
+                _selectSecondsChronometerSelectedColor = value;
+                OnPropertyChanged("SelectSecondsChronometerSelectedColor");
             }
         }
 
@@ -203,6 +205,20 @@ namespace prueba_WPF_cronometro.ViewModels
             {
                 _startEnabled = value;
                 OnPropertyChanged("StartEnabled");
+            }
+        }
+
+        private string _pauseContent;
+        public string PauseContent
+        {
+            get { return _pauseContent; }
+            set
+            {
+                if (_pauseContent != value)
+                {
+                    _pauseContent = value;
+                    OnPropertyChanged("PauseContent");
+                }
             }
         }
 

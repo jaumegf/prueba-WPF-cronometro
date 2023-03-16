@@ -1,30 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Threading;
+using static prueba_WPF_cronometro.ControlsLogic.IChronometer;
 
-namespace prueba_WPF_cronometro.Logic
+namespace prueba_WPF_cronometro.ControlsLogic
 {
     public class CommonChronometer: IChronometer
     {
         public DispatcherTimer Timer { get; set; }
+
+        public DelegateRefresh CallBackRefresh { get; set; }
+
+        public void Refresh(DelegateRefresh callback)
+        {
+            callback();
+        }
 
         public TimeSpan AgregatedTime { get; set; }
 
         public DateTime StartTime { get; set; }
 
 
-        public virtual void Init(DispatcherTimer timer)
-        {
-            Timer = timer;
-            Start();
-        }
-
         public virtual void Start()
         {
+            Timer = new DispatcherTimer();
+            Timer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            Timer.Tick += OnTimerTick;
+
             StartTime = DateTime.Now;
             AgregatedTime = new TimeSpan(0);
             Timer.Start();
@@ -58,6 +59,12 @@ namespace prueba_WPF_cronometro.Logic
                 TimeSpan duration = (DateTime.Now - StartTime + AgregatedTime);
                 return $"{Math.Floor(duration.TotalHours)}:{(Math.Floor(duration.TotalMinutes)%60).ToString("00")}:{(Math.Floor(duration.TotalSeconds)%60).ToString("00")}";
             }
+        }
+
+
+        private void OnTimerTick(object sender, EventArgs e)
+        {
+            CallBackRefresh();
         }
     }
 }

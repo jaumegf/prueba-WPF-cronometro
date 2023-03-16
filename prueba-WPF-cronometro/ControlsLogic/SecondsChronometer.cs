@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 
-namespace prueba_WPF_cronometro.Logic
+namespace prueba_WPF_cronometro.ControlsLogic
 {
     public class SecondsChronometer: CommonChronometer, IChronometer
     {

@@ -5,11 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace prueba_WPF_cronometro.Logic
+namespace prueba_WPF_cronometro.ControlsLogic
 {
     public interface IChronometer
     {
         DispatcherTimer Timer { get; set; }
+
+        delegate void DelegateRefresh();
+        DelegateRefresh CallBackRefresh { get; set; }
+        void Refresh(DelegateRefresh callback);
 
         /// <summary>
         /// Tiempo acumulado que debe acumularse en cada pausa.
@@ -21,8 +25,6 @@ namespace prueba_WPF_cronometro.Logic
         /// Inicio del cronómetro
         /// </summary>
         DateTime StartTime { get; set; }
-
-        void Init(DispatcherTimer timer);
 
         void Start();
 
