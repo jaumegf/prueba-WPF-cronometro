@@ -6,9 +6,37 @@
         xmlns:local="clr-namespace:prueba_WPF_cronometro"
         mc:Ignorable="d"
         Title="Cronómetro" Height="450" Width="800">
-    
 
-        <Grid>
+    <Window.Resources>
+        <Style x:Key="ChronometerButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF006699"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF0088CC"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="Gray"/>
+                    <Setter Property="Foreground" Value="DarkGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -32,12 +60,16 @@
             
             <Border Background="LightGray" Grid.Row="1">
                  <StackPanel Margin="10">
-                    <Button Content="Start" Margin="5" Padding="10" Cursor="Hand"
+                    <Button Content="Start" 
+                            Style="{StaticResource ChronometerButtonStyle}"
+                            Margin="5" Padding="10" Cursor="Hand"
                             Command="{Binding StartCommand}" IsEnabled="{Binding StartEnabled}" />
                     <Button Content="{Binding PauseContent}" 
+                            Style="{StaticResource ChronometerButtonStyle}"
                             Margin="5" Padding="10" Cursor="Hand"
                             Command="{Binding PauseCommand}" IsEnabled="{Binding PauseEnabled}" />
                     <Button Content="Stop" Margin="5" Padding="10" Cursor="Hand"
+                            Style="{StaticResource ChronometerButtonStyle}"
                             Command="{Binding StopCommand}" IsEnabled="{Binding StopEnabled}" />
                 </StackPanel>
             </Border>
